@@ -36,3 +36,30 @@ select * from payment where payment_id between 17505 and 17509;
 select * from payment where payment_id not between 17506 and 17509;
 
 --like examples
+select address_id, address, district from address where district like 'A%' order by address_id;
+select address_id, address, district from address where district not like 'Alber%' order by address_id;
+select address_id, district from address where district ilike 'Mi%';
+
+select * from actor;
+select first_name from actor where first_name ~~'_nn%';
+select last_name from actor where last_name !~~ '_ol%';
+select first_name from actor where first_name ~~* 'n%';
+select last_name from actor where last_name !~~* 'm%';
+
+create table paragaph(
+message text
+);
+
+insert into paragaph(message)
+values
+('this is 30% low'),
+('they are 20% less' );
+
+select message from paragaph;
+
+select message from paragaph where message like '%30$%%' escape '$';
+
+
+
+
+

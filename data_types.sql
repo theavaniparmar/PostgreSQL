@@ -60,5 +60,61 @@ values
 
 select * from users;
 
+--case conditional expression 
+select
+title,
+length,
+case when length >0
+and length<=50 then 'short' when length >50
+and length<=120 then 'medium' when length >120
+then 'long' end duration 
+from film
+order by title;
+
+--coalesce example 
+select coalesce(null,2,1);
+select coalesce(2,null,3,null,7,8,null,9);
+select coalesce(null,null);
+
+--new example
+create table items(
+id serial primary key,
+product varchar(100) not null,
+price numeric not null,
+discount numeric
+);
+
+insert into items (product, price, discount)
+values 
+('A', 1000, 5),
+('B', 500, 10),
+('c', 2000, null);
+
+select product , (price-discount) as net_price
+from items;
+
+select product, (price - coalesce(discount, 0)) as net_price 
+from items;
+
+select product, (case when discount is null then 0 else discount end ) as  net_price
+from items;
+
+select nullif(2,2);
+select nullif(3,4);
+
+--cast function 
+select cast ('200' as decimal);
+
+select cast('true' as boolean);
+select cast (array[1,2,3] as text);
+
+select * from film;
+
+select * from actor;
+
+
+
+
+
 
 

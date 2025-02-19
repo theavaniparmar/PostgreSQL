@@ -44,7 +44,7 @@ contact_no numeric);
 select * from person;
 
 
-)
+
 
 
 

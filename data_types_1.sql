@@ -101,3 +101,48 @@ values
 ('laptop', 'brand => "hp", RAM => "16 GB", storage => "1 tb"');
 
 select * from products;
+select name, attributes -> 'color' as color from products;
+
+update products
+set attributes = attributes || 'color => "grey"'
+where name = 'pen';
+
+
+update products
+set attributes = attributes || 'color => "grey"'
+where name = 'laptop';
+
+select * from products;
+
+update products 
+set attributes = delete(attributes,'RAM')
+where name = 'laptop';
+
+select * from products;
+
+select name from products where attributes ? 'storage';
+
+--json and jsonb examples 
+create table clothes(
+id serial primary key,
+product_name varchar(50),
+properties jsonb
+);
+
+insert into clothes(product_name, properties)
+values 
+('t-shirt', '{"size": ["small","large"],"color": "black"}'),
+('joggers', '{"size": ["medium", "extra small"], "color": "white"}')
+returning *;
+
+select product_name, properties -> 'size' as size from clothes;
+select product_name, properties ->> 'color' as color from clothes; --retrieve value as text 
+
+
+
+
+
+
+
+
+

@@ -20,7 +20,7 @@ set tablespace manager_default;
 
 create tablespace manager_default
 owner manager
-location 'C:\Users\Avani\Downloads\manager_tablespace';
+location 'C:\Users\avani\Downloads\manager_tablespace1';
 
 --copy database 
 create database sample_db_copy with template sample_db owner postgres;
@@ -117,9 +117,30 @@ connection limit 10
 valid until '2025-02-22';
 
 --new one 
-create role saniya 
+create role Nil
 login 
-password 'Welcome@123
+password 'Welcome@123';
+
+drop table if exists person;
+
+create table person (
+id serial primary key,
+name varchar
+);
+
+select current_schema();
+
+drop role nil;
+
+
+--role membership 
+
+
+
+
+
+
+
 
 
 		

@@ -133,7 +133,6 @@ select current_schema();
 drop role nil;
 
 
---role membership 
 
 
 

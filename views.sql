@@ -144,6 +144,13 @@ select * from employee_hierarchy;
 
 select * from employee_query;
 
+select * from pg_matviews;    --listing views
+
+alter materialized view high_salary_employees 
+rename to low_salary_employees;
+
+select table_name, table_schema from information_schema.views;
+
 
 
 

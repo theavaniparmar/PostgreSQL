@@ -61,6 +61,57 @@ select indexname, indexdef from pg_indexes
 where tablename = 'cilent';
 
 
+--full text search
+create table products(
+id serial primary key,
+name varchar(10),
+specification text
+);
+
+insert into products(name, specification)
+values
+('Ipromax 16', 'this is a very popular smartphone.'),
+('HP laptop', 'It is used by students.');
+
+select * from products;
+
+explain select * from products where to_tsvector(specification) @@ to_tsquery('popular');
+
+create index idx_products on products using gin(to_tsvector('english', specification));
+
+select name, ts_rank(to_tsvector(specification), to_tsquery('popular'))
+from products 
+where to_tsvector(specification) @@ to_tsquery('popular')
+order by ts_rank desc;
+
+--json index
+drop table if exists car_models;
+
+create table car_models(
+id serial primary key,
+name varchar(50),
+features jsonb
+);
+
+
+insert into car_models(name, features)
+values 
+('swift','{"color": "white", "price": "1,00,000", "type": "EV"}'),
+('BMW', '{"color": "grey", "price": "7,00,000", "type": "petrol"}'),
+('creta', '{"color": "black", "price": "5,50,000", "type": "EV"}');
+
+explain select name from car_models where features ->> 'type' = 'EV';
+
+create index idx_car on car_models using gin(features); 
+
+explain select name from car_models where features @> '{"type": "EV"}';
+
+
+
+CREATE INDEX idx_car_price ON car_models((features->>'price'));
+
+select * from car_models where features ->> 'price' = '7,00,000';   --for exact data match use b tree indexing
+
 
 
 

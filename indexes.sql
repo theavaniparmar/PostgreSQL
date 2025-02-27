@@ -117,6 +117,8 @@ select * from car_models where features ->> 'price' = '7,00,000';   --for exact 
 
 
 
+
+
 	
 
 

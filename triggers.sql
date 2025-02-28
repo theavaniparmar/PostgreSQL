@@ -88,6 +88,79 @@ select * from bank_accounts;
 alter trigger check_balance_before_update on bank_accounts
 rename to check_balance;
 
+-------------------------------------------------------------------
+
+--before insert trigger example (automatic change name in proper case)
+
+create table users(
+id serial primary key,
+name varchar(50)
+);
+
+create function format_username()
+returns trigger as 
+$$
+begin 
+new.name = initcap(new.name);
+return new;
+end;
+$$ 
+language plpgsql;
+
+create trigger before_insert 
+before insert on users
+for each row 
+execute function format_username();
+
+insert into users (name) values ('avani parmar');
+
+select * from users;
+
+---------------------------------------------------------
+
+--after update trigger example 
+
+create table employee_info(
+id serial primary key,
+name varchar(50),
+salary numeric 
+);
+
+create table employee_logtable(
+id serial primary key,
+employee_id int,
+old_salary numeric,
+new_salary numeric,
+difference numeric generated always as (new_salary - old_salary) stored,
+changed_date timestamp default now()
+);
+
+create function salary_change()
+returns trigger as 
+$$
+begin 
+insert into employee_logtable(employee_id, old_salary, new_salary,changed_date)
+values (old.id, old.salary, new.salary, now());
+return new;
+end;
+$$
+language plpgsql;
+
+create trigger after_update 
+after update on employee_info
+for each row
+execute function salary_change();
+
+insert into employee_info(name, salary)
+values ('avani', 4000), ('aman', 5000);
+
+update employee_info set salary = 10000 where name = 'avani';
+
+select * from employee_logtable;
+
+-----------------------------------------------------------
+
+
 
 
 

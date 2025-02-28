@@ -45,4 +45,53 @@ select * from employees_archieve;
 select * from employees;
 
 
+-------------------------------------------------------------------------------------
+
+--bank account trigger 
+
+create table bank_accounts(
+id serial primary key,
+account_holder text,
+balance numeric check (balance>=0)
+);
+
+
+insert into bank_accounts(account_holder, balance)
+values 
+('satish', 1200),
+('nirav', 1500),
+('daxit', 1000);
+
+create function prevent_negative_balance()
+returns trigger as $$
+begin 
+if new.balance<0 then
+raise exception 'insufficient balance!';
+end if;
+return new;
+end;
+$$ language plpgsql;
+
+create trigger check_balance_before_update
+before update on bank_accounts
+for each row
+execute function prevent_negative_balance();
+
+update bank_accounts set balance = balance - 1100 where account_holder = 'daxit';
+
+update bank_accounts set balance = balance - 500 where account_holder = 'daxit';
+
+select * from bank_accounts;
+
+------------------------------------------------------------------
+
+alter trigger check_balance_before_update on bank_accounts
+rename to check_balance;
+
+
+
+
+
+
+
 

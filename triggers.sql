@@ -160,6 +160,53 @@ select * from employee_logtable;
 
 -----------------------------------------------------------
 
+alter table employee_info 
+disable trigger after_update;
+
+alter table employee_info
+enable trigger after_update;
+
+--------------------------------------------------------------
+
+--event trigger 
+
+create table audits(
+log_id serial primary key,
+event_type text,
+schema_type text,
+username text,
+executed_at timestamp default now()
+);
+
+create function event_trigger_fn1()
+returns event_trigger as 
+$$
+begin 
+insert into audits(event_type, schema_type, username)
+values (tg_tag, current_schema(), session_user );
+end;
+$$
+language plpgsql;
+
+create event trigger trigger1
+on ddl_command_start
+when tag in ('create table', 'drop table', 'alter table')	
+execute function event_trigger_fn1();
+
+--for testing 
+create table book1(
+id serial primary key,
+title text
+);
+
+select * from audits;
+
+--------------------------------------------------------
+
+
+
+
+
 
 
 

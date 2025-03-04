@@ -184,6 +184,118 @@ select position('ful' in 'useful');
 
 select repeat('divya ', 5);
 
+--windows function
+
+CREATE TABLE sales (
+    id SERIAL PRIMARY KEY,
+    salesperson VARCHAR(50),
+    region VARCHAR(50),
+    sales_amount INT
+);
+
+INSERT INTO sales (salesperson, region, sales_amount) VALUES
+('Alice', 'North', 500),
+('Bob', 'North', 300),
+('Charlie', 'South', 400),
+('David', 'South', 600),
+('Eve', 'West', 700),
+('Frank', 'West', 450);
+
+
+--row_number fn
+select salesperson,region, sales_amount,
+row_number() over(partition by region order by sales_amount desc) as ranking
+from sales;
+
+update sales 
+set sales_amount = 500
+where salesperson = 'Eve';
+
+--rank fn
+select *, rank() over(partition by region order by sales_amount desc) as rank
+from sales;
+
+update sales 
+set sales_amount = 500
+where salesperson = 'Frank';
+
+select *, dense_rank() over(partition by region order by sales_amount desc) AS ORDER
+from sales;
+
+insert into sales(salesperson, region, sales_amount) 
+values 
+('akash', 'west', 500),
+('vikas', 'west' , 900)
+returning *;
+
+select * from sales;
+
+insert into sales(salesperson, region, sales_amount) 
+values 
+('param', 'West', 500),
+('meet', 'West' , 900);
+
+insert into sales(salesperson, region, sales_amount) 
+values
+('rutvi', 'West', 300);
+
+
+--new example for ranking 
+
+create table t(
+id serial primary key,
+value varchar(10)
+);
+
+insert into t(value)
+values 
+('a'),
+('b'),
+('b'),
+('c'),
+('d'),
+('d'),
+('d'),
+('e');
+
+select * from t;
+
+
+--ntile fn
+select *, ntile(3) over (partition by region order by sales_amount desc) as bucket
+from sales;
+
+--first value fn
+select *, first_value(sales_amount) over (partition by region order by sales_amount desc) as highest_sales
+from sales;
+
+select *, first_value(sales_amount) over (partition by region order by sales_amount ) as lowest_sales
+from sales;
+
+select *, nth_value(sales_amount,2) over (partition by region order by sales_amount desc rows between unbounded preceding and unbounded following) as second_highest_sales
+from sales;
+
+
+
+--last value fn
+select *, last_value(sales_amount) over (partition by region order by sales_amount desc rows between unbounded preceding and unbounded following ) as lowest_sales
+from sales;
+
+select *, last_value(sales_amount) over (partition by region order by sales_amount desc ) as lowest_sales
+from sales;
+
+--sum fn
+SELECT salesperson, region, sales_amount,
+       SUM(sales_amount) OVER (PARTITION BY region ORDER BY sales_amount) AS running_total
+FROM sales;
+
+
+
+
+
+
+
+
 
 
 

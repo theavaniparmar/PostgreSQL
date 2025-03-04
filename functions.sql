@@ -98,6 +98,100 @@ set details = jsonb_strip_nulls(details);
 
 select jsonb_pretty(details) from employees2;
 
+-----------------------------------------------------
+
+drop table employees cascade;
+
+create table employees(
+id serial primary key,
+details jsonb
+);
+
+insert into employees (details) values
+('{"name" : "avani", "skills" : ["sql", "csharp", "java"]}'),
+('{"name" : "aman", "skills" : ["C++", "python"]}');
+
+select jsonb_array_elements(details ->'skills') as skills
+from employees 
+where details ->> 'name' = 'aman';
+
+select jsonb_array_elements_text(details ->'skills') as skills
+from employees 
+where details ->> 'name' = 'avani';
+
+select jsonb_array_length(details ->'skills') as skills
+from employees 
+where details ->> 'name' = 'aman';
+
+select jsonb_agg(details) from employees;
+
+UPDATE employees
+SET details = jsonb_set(details, '{skills}', 
+       (SELECT jsonb_agg(elem)
+        FROM jsonb_array_elements(details->'skills') elem
+        WHERE elem <> '"sql"'))
+WHERE details->>'name' = 'avani'
+RETURNING *;
+
+--for deleting particular element in skill using value base method
+
+--utility functions
+
+select jsonb_typeof('[]');
+select jsonb_typeof('1' :: jsonb);
+
+--math functions
+create table students(
+id serial primary key,
+student_name text,
+marks bigint
+);
+
+insert into students(student_name, marks)
+values
+('simran', 79),
+('saniya', 34),
+('man', 95),
+('naitik', 12),
+('krishna', 65);
+
+
+select student_name, marks,
+width_bucket(marks, 0, 100, 4) as grade_bucket
+from students;
+
+select student_name, marks, width_bucket(marks,0,100,4) as grade_bucket,
+case 
+when width_bucket(marks,0,100,4) = 1 then 'fail'
+when width_bucket(marks,0,100,4) = 2 then 'average' 
+when width_bucket(marks,0,100,4) = 3 then 'good' 
+when width_bucket(marks,0,100,4) = 4 then 'best'
+else 'out of range' 
+end as grade
+from students;
+
+--string functions
+
+select length('avani');
+
+select concat('avani ', 'parmar');
+
+select initcap('avani parmar');
+
+select substring('useful', 1,3);
+
+select position('ful' in 'useful');
+
+select repeat('divya ', 5);
+
+
+
+
+
+
+
+
+
 
 
 

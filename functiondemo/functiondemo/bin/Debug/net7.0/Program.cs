@@ -17,31 +17,33 @@ class Program
         string connString = config.GetConnectionString("PostgresConnection");
 
         // call the function
-        decimal salary = GetSalary(connString, "Avani Parmar");
+        decimal salary = GetSalary(connString, "Avani ");
         Console.WriteLine($"salary of Avani Parmar : {salary}");
 
     }
 
     static decimal GetSalary(string connstring, string name)
     {
-        using (var conn = new NpgsqlConnection(connstring))
+        try 
         {
-            conn.Open();
-            using (var cmd = new NpgsqlCommand("select get_salary(@p_name)", conn))
+            using (var conn = new NpgsqlConnection(connstring))
             {
-                cmd.Parameters.AddWithValue("p_name", name);
-                object result = cmd.ExecuteScalar();
+                conn.Open();
+                using (var cmd = new NpgsqlCommand("select get_salary(@p_name)", conn))
+                {
+                    cmd.Parameters.AddWithValue("p_name", name);
+                    object result = cmd.ExecuteScalar();
 
-                if (result == null || result == DBNull.Value)
-                {
-                    Console.WriteLine("Employee not found. Returning default salary.");
-                    return 0;
-                }
-                else
-                {
-                    return Convert.ToDecimal(result);
+                    if (result != null && result != DBNull.Value)
+                        return Convert.ToDecimal(result);
+                    else
+                        throw new Exception("Employee not found!");
                 }
             }
         }
-    }
+        catch (Exception ex) {
+            Console.WriteLine(ex.ToString());
+            return 0;
+        }
+        }
 }

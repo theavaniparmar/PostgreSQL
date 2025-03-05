@@ -289,8 +289,24 @@ SELECT salesperson, region, sales_amount,
        SUM(sales_amount) OVER (PARTITION BY region ORDER BY sales_amount) AS running_total
 FROM sales;
 
+SELECT salesperson, region, sales_amount,
+       AVG(sales_amount) OVER (PARTITION BY region ORDER BY sales_amount ROWS BETWEEN 1 PRECEDING AND 1 FOLLOWING) AS moving_avg
+FROM sales;
 
+--lag fn
 
+select *, lag(sales_amount,1,0) over (partition by region order by sales_amount) as prev_sales 
+from sales;
+
+--lead fn
+select *, lead(sales_amount,2,0) over(partition by region order by sales_amount) as next_sales
+from sales;
+
+--cume_dist fn
+select salesperson, region, sales_amount,
+cume_dist() over (partition by region order by sales_amount) as cume_dist,
+cume_dist() over (partition by region order by sales_amount) * 100 || '%' as percentage_cume_dist
+from sales;
 
 
 

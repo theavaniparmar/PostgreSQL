@@ -45,7 +45,7 @@ class Program
                 }
 
             }
-        } catch(Exception ex) { Console.Write(ex.ToString()); }s
+        } catch(Exception ex) { Console.Write(ex.ToString()); }
     }
 }
 

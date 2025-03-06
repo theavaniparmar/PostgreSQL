@@ -34,13 +34,13 @@ class Program
                 using (var cmd = new NpgsqlCommand(createTableQuery, conn))
                 {
                     cmd.ExecuteNonQuery();
-                    Console.WriteLine("✅ Table 'employees' created successfully!");
+                    Console.WriteLine(" Table 'employees' created successfully!");
                 }
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"❌ Error: {ex.Message}");
+            Console.WriteLine($" Error: {ex.Message}");
         }
     }
 }

@@ -1016,6 +1016,7 @@
   },
   "projectFileDependencyGroups": {
     "net7.0": [
+      "Microsoft.Extensions.Configuration >= 9.0.2",
       "Microsoft.Extensions.Configuration.Json >= 9.0.2",
       "Npgsql >= 9.0.3"
     ]
@@ -1065,6 +1066,10 @@
       "net7.0": {
         "targetAlias": "net7.0",
         "dependencies": {
+          "Microsoft.Extensions.Configuration": {
+            "target": "Package",
+            "version": "[9.0.2, )"
+          },
           "Microsoft.Extensions.Configuration.Json": {
             "target": "Package",
             "version": "[9.0.2, )"

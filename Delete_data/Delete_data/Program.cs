@@ -35,20 +35,20 @@ class Program
         {
             conn.Open();
 
-            string deleteQuery = "delete from employees where id = @p_id";
+            string deleteQuery = "delete from employees where id = @p_id returning id";
 
             using(var conn2 = new NpgsqlCommand(deleteQuery, conn)) 
             {
                 conn2.Parameters.AddWithValue("p_id", emp_id);
-                int result = conn2.ExecuteNonQuery();
+                var result = conn2.ExecuteScalar();
 
-                if (result >= 0)
+                if (result != null)
                 {
                     Console.WriteLine($" Employee with {emp_id} deleted successfully... ");
                 }
                 else
                 {
-                    Console.WriteLine("Error");
+                    Console.WriteLine("Employee not found!");
                 }
             }
         }
